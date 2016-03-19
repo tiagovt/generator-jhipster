@@ -2,8 +2,10 @@
 <form name="editForm" role="form" novalidate ng-submit="save()"<% if (validation) { %> show-validation<% } %>>
 
     <div class="modal-header">
+        <!--
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 ng-click="clear()">&times;</button>
+        -->        
         <h4 class="modal-title" id="my<%= entityClass %>Label" translate="<%= keyPrefix %>home.createOrEditLabel">Create or edit a <%= entityClass %></h4>
     </div>
     <div class="modal-body">
@@ -195,7 +197,7 @@
         <%_ } _%>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="clear()">
+        <button type="button" class="btn btn-default" onclick="window.history.back()">
             <span class="glyphicon glyphicon-ban-circle"></span>&nbsp;<span translate="entity.action.cancel">Cancel</span>
         </button>
         <button type="submit" ng-disabled="editForm.$invalid || isSaving" class="btn btn-primary">

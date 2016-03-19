@@ -59,6 +59,7 @@ angular.module('<%=angularAppName%>')
                 data: {
                     authorities: ['ROLE_USER'],
                 },
+                /*
                 onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                     $uibModal.open({
                         templateUrl: 'scripts/app/entities/<%= entityInstance %>/<%= entityInstance %>-dialog.html',
@@ -87,6 +88,13 @@ angular.module('<%=angularAppName%>')
                         $state.go('<%= entityInstance %>');
                     })
                 }]
+                */
+                views: {
+                    'content@': {
+                        templateUrl: 'scripts/app/entities/<%= entityInstance %>/<%= entityInstance %>-dialog.html',
+                        controller: '<%= entityClass %>DialogController'
+                    }
+                },
             })
             .state('<%= entityInstance %>.edit', {
                 parent: '<%= entityInstance %>',
@@ -94,6 +102,7 @@ angular.module('<%=angularAppName%>')
                 data: {
                     authorities: ['ROLE_USER'],
                 },
+                /*
                 onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
                     $uibModal.open({
                         templateUrl: 'scripts/app/entities/<%= entityInstance %>/<%= entityInstance %>-dialog.html',
@@ -110,6 +119,13 @@ angular.module('<%=angularAppName%>')
                         $state.go('^');
                     })
                 }]
+                */
+                views: {
+                    'content@': {
+                        templateUrl: 'scripts/app/entities/<%= entityInstance %>/<%= entityInstance %>-dialog.html',
+                        controller: '<%= entityClass %>DialogController'
+                    }
+                },
             })
             .state('<%= entityInstance %>.delete', {
                 parent: '<%= entityInstance %>',

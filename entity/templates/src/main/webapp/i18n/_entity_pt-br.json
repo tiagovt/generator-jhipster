@@ -3,12 +3,12 @@
         "<%= entityInstance %>" : {
             "home": {
                 "title": "<%= entityClass %>s",
-                "createLabel": "Create a new <%= entityClass %>",
-                "createOrEditLabel": "Create or edit a <%= entityClass %>",
+                "createLabel": "Criar novo <%= entityClass %>",
+                "createOrEditLabel": "Criar ou editar <%= entityClass %>",
                 "search": "Search for <%= entityClass %>"
             },
             "delete": {
-                "question": "Are you sure you want to delete <%= entityClass %> {{ id }}?"
+                "question": "Tem certeza de que deseja excluir <%= entityClass %> {{ id }}?"
             },
             "detail": {
                 "title": "<%= entityClass %>"

@@ -1,10 +1,16 @@
 'use strict';
 
+/*
 angular.module('<%=angularAppName%>').controller('<%= entityClass %>DialogController',
     ['$scope', '$stateParams', '$uibModalInstance'<% if (fieldsContainOwnerOneToOne) { %>, '$q'<% } %><% if (fieldsContainBlob) { %>, 'DataUtils'<% } %>, 'entity', '<%= entityClass %>'<% for (idx in differentTypes) { if (differentTypes[idx] != entityClass) {%>, '<%= differentTypes[idx] %>'<% } } %>,
         function($scope, $stateParams, $uibModalInstance<% if (fieldsContainOwnerOneToOne) { %>, $q<% } %><% if (fieldsContainBlob) { %>, DataUtils<% } %>, entity, <%= entityClass %><% for (idx in differentTypes) { if (differentTypes[idx] != entityClass) {%>, <%= differentTypes[idx] %><% } } %>) {
+*/
 
-        $scope.<%= entityInstance %> = entity;<%
+angular.module('<%=angularAppName%>').controller('<%= entityClass %>DialogController',
+    ['$state','$scope', '$stateParams', <% if (fieldsContainOwnerOneToOne) { %>, '$q'<% } %><% if (fieldsContainBlob) { %>, 'DataUtils'<% } %>'<%= entityClass %>'<% for (idx in differentTypes) { if (differentTypes[idx] != entityClass) {%>, '<%= differentTypes[idx] %>'<% } } %>,
+        function($state,$scope, $stateParams, <% if (fieldsContainOwnerOneToOne) { %>, $q<% } %><% if (fieldsContainBlob) { %>, DataUtils<% } %> <%= entityClass %><% for (idx in differentTypes) { if (differentTypes[idx] != entityClass) {%>, <%= differentTypes[idx] %><% } } %>) {
+
+        //$scope.<%= entityInstance %> = entity;<%
             var queries = [];
             for (idx in relationships) {
                 var query;
@@ -36,9 +42,13 @@ angular.module('<%=angularAppName%>').controller('<%= entityClass %>DialogContro
             });
         };
 
+        if($stateParams.id != undefined){
+            $scope.load($stateParams.id);
+        }
+
         var onSaveSuccess = function (result) {
             $scope.$emit('<%=angularAppName%>:<%= entityInstance %>Update', result);
-            $uibModalInstance.close(result);
+            //$uibModalInstance.close(result);
             $scope.isSaving = false;
         };
 
@@ -53,6 +63,7 @@ angular.module('<%=angularAppName%>').controller('<%= entityClass %>DialogContro
             } else {
                 <%= entityClass %>.save($scope.<%= entityInstance %>, onSaveSuccess, onSaveError);
             }
+            $state.go('<%= entityInstance %>', null, { reload: true });
         };
 
         $scope.clear = function() {
