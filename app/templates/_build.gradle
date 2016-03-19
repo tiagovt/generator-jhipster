@@ -93,6 +93,9 @@ repositories {
 }
 
 dependencies {
+    //project lombok
+    provided "org.projectlombok:lombok:1.16.8"
+
     compile group: 'io.dropwizard.metrics', name: 'metrics-core'<% if (hibernateCache == 'ehcache') { %>
     compile group: 'io.dropwizard.metrics', name: 'metrics-annotation', version: dropwizard_metrics_version
     compile group: 'io.dropwizard.metrics', name: 'metrics-ehcache', version: dropwizard_metrics_version<% } %>

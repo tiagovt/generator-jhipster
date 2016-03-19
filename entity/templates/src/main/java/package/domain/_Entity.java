@@ -55,7 +55,7 @@ for (fieldId in fields) {
 Object.keys(uniqueEnums).forEach(function(element) { %>
 
 import <%=packageName%>.domain.enumeration.<%= element %>;<% }); %>
-
+import lombok.Data;
 <% if (typeof javadoc == 'undefined') { -%>
 /**
  * A <%= entityClass %>.
@@ -71,6 +71,7 @@ import <%=packageName%>.domain.enumeration.<%= element %>;<% }); %>
 @Document(collection = "<%= entityTableName %>")<% } %><% if (databaseType == 'cassandra') { %>
 @Table(name = "<%= entityInstance %>")<% } %><% if (searchEngine == 'elasticsearch') { %>
 @Document(indexName = "<%= entityInstance.toLowerCase() %>")<% } %>
+@Data
 public class <%= entityClass %> implements Serializable {
 <% if (databaseType == 'sql') { %>
     @Id
@@ -177,75 +178,6 @@ public class <%= entityClass %> implements Serializable {
     <%_    } _%>
     private <%= relationships[relationshipId].otherEntityNameCapitalized %> <%= relationships[relationshipId].relationshipFieldName %>;
 
-    <%_ } } _%>
-    public <% if (databaseType == 'sql') { %>Long<% } %><% if (databaseType == 'mongodb') { %>String<% } %><% if (databaseType == 'cassandra') { %>UUID<% } %> getId() {
-        return id;
-    }
-
-    public void setId(<% if (databaseType == 'sql') { %>Long<% } %><% if (databaseType == 'mongodb') { %>String<% } %><% if (databaseType == 'cassandra') { %>UUID<% } %> id) {
-        this.id = id;
-    }
-<% for (fieldId in fields) { %>
-    <%_ if (fields[fieldId].fieldTypeBlobContent != 'text') { _%>
-    public <%= fields[fieldId].fieldType %> get<%= fields[fieldId].fieldInJavaBeanMethod %>() {
-    <%_ } else { _%>
-    public String get<%= fields[fieldId].fieldInJavaBeanMethod %>() {
-    <%_ } _%>
-        return <%= fields[fieldId].fieldName %>;
-    }
-    
-    <%_ if (fields[fieldId].fieldTypeBlobContent != 'text') { _%>
-    public void set<%= fields[fieldId].fieldInJavaBeanMethod %>(<%= fields[fieldId].fieldType %> <%= fields[fieldId].fieldName %>) {
-    <%_ } else { _%>
-    public void set<%= fields[fieldId].fieldInJavaBeanMethod %>(String <%= fields[fieldId].fieldName %>) {
-    <%_ } _%>
-        this.<%= fields[fieldId].fieldName %> = <%= fields[fieldId].fieldName %>;
-    }
-    <%_ if (fields[fieldId].fieldType == 'byte[]' && fields[fieldId].fieldTypeBlobContent != 'text') { _%>
-
-    public String get<%= fields[fieldId].fieldInJavaBeanMethod %>ContentType() {
-        return <%= fields[fieldId].fieldName %>ContentType;
-    }
-
-    public void set<%= fields[fieldId].fieldInJavaBeanMethod %>ContentType(String <%= fields[fieldId].fieldName %>ContentType) {
-        this.<%= fields[fieldId].fieldName %>ContentType = <%= fields[fieldId].fieldName %>ContentType;
-    }
-    <%_ } _%>
-<% } %><% for (relationshipId in relationships) { %><% if (relationships[relationshipId].relationshipType == 'one-to-many' || relationships[relationshipId].relationshipType == 'many-to-many') { %>
-    public Set<<%= relationships[relationshipId].otherEntityNameCapitalized %>> get<%= relationships[relationshipId].relationshipNameCapitalized %>s() {
-        return <%= relationships[relationshipId].relationshipFieldName %>s;
-    }
-
-    public void set<%= relationships[relationshipId].relationshipNameCapitalized %>s(Set<<%= relationships[relationshipId].otherEntityNameCapitalized %>> <%= relationships[relationshipId].otherEntityName %>s) {
-        this.<%= relationships[relationshipId].relationshipFieldName %>s = <%= relationships[relationshipId].otherEntityName %>s;
-    }<% } else { %>
-    public <%= relationships[relationshipId].otherEntityNameCapitalized %> get<%= relationships[relationshipId].relationshipNameCapitalized %>() {
-        return <%= relationships[relationshipId].relationshipFieldName %>;
-    }
-
-    public void set<%= relationships[relationshipId].relationshipNameCapitalized %>(<%= relationships[relationshipId].otherEntityNameCapitalized %> <%= relationships[relationshipId].otherEntityName %>) {
-        this.<%= relationships[relationshipId].relationshipFieldName %> = <%= relationships[relationshipId].otherEntityName %>;
-    }<% } %>
-<% } %>
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        <%= entityClass %> <%= entityInstance %> = (<%= entityClass %>) o;
-        if(<%= entityInstance %>.id == null || id == null) {
-            return false;
-        }
-        return Objects.equals(id, <%= entityInstance %>.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
 
     @Override
     public String toString() {
