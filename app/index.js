@@ -416,7 +416,7 @@ module.exports = JhipsterGenerator.extend({
                             name: 'Yes, with ElasticSearch'
                         }
                     ],
-                    default: 0
+                    default: 1
                 },
                 {
                     type: 'list',
