@@ -92,36 +92,31 @@
             data: {
                 authorities: ['ROLE_USER']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            
+            views: {
+                'content@': {
                     templateUrl: 'app/entities/<%= entityFolderName %>/<%= entityFileName %>-dialog.html',
                     controller: '<%= entityAngularJSName %>DialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: function () {
-                            return {
-                                <%_ for (idx in fields) { _%>
-                                    <%_ if (fields[idx].fieldType == 'Boolean' && fields[idx].fieldValidate == true && fields[idx].fieldValidateRules.indexOf('required') != -1) { _%>
-                                <%= fields[idx].fieldName %>: false,
-                                    <%_ } else { _%>
-                                <%= fields[idx].fieldName %>: null,
-                                        <%_ if (fields[idx].fieldType == 'byte[]' && fields[idx].fieldTypeBlobContent != 'text') { _%>
-                                <%= fields[idx].fieldName %>ContentType: null,
-                                        <%_ } _%>
-                                    <%_ } _%>
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {
+                entity: function () {
+                    return {
+                        <%_ for (idx in fields) { _%>
+                            <%_ if (fields[idx].fieldType == 'Boolean' && fields[idx].fieldValidate == true && fields[idx].fieldValidateRules.indexOf('required') != -1) { _%>
+                        <%= fields[idx].fieldName %>: false,
+                            <%_ } else { _%>
+                        <%= fields[idx].fieldName %>: null,
+                                <%_ if (fields[idx].fieldType == 'byte[]' && fields[idx].fieldTypeBlobContent != 'text') { _%>
+                        <%= fields[idx].fieldName %>ContentType: null,
                                 <%_ } _%>
-                                id: null
-                            };
-                        }
-                    }
-                }).result.then(function() {
-                    $state.go('<%= entityStateName %>', null, { reload: true });
-                }, function() {
-                    $state.go('<%= entityStateName %>');
-                });
-            }]
+                            <%_ } _%>
+                        <%_ } _%>
+                        id: null
+                    };
+                }
+            }
         })
         .state('<%= entityStateName %>.edit', {
             parent: '<%= entityStateName %>',
@@ -129,24 +124,25 @@
             data: {
                 authorities: ['ROLE_USER']
             },
-            onEnter: ['$stateParams', '$state', '$uibModal', function($stateParams, $state, $uibModal) {
-                $uibModal.open({
+            views: {
+                'content@': {
                     templateUrl: 'app/entities/<%= entityFolderName %>/<%= entityFileName %>-dialog.html',
                     controller: '<%= entityAngularJSName %>DialogController',
-                    controllerAs: 'vm',
-                    backdrop: 'static',
-                    size: 'lg',
-                    resolve: {
-                        entity: ['<%= entityClass %>', function(<%= entityClass %>) {
-                            return <%= entityClass %>.get({id : $stateParams.id});
-                        }]
-                    }
-                }).result.then(function() {
-                    $state.go('<%= entityStateName %>', null, { reload: true });
-                }, function() {
-                    $state.go('^');
-                });
-            }]
+                    controllerAs: 'vm'
+                }
+            },
+            resolve: {<% if (enableTranslation){ %>
+                translatePartialLoader: ['$translate', '$translatePartialLoader', function ($translate, $translatePartialLoader) {
+                    $translatePartialLoader.addPart('<%= entityInstance %>');<%
+                    for (var idx in fields) {
+                      if (fields[idx].fieldIsEnum == true) { %>
+                    $translatePartialLoader.addPart('<%= fields[idx].enumInstance %>');<% }} %>
+                    return $translate.refresh();
+                }],<% } %>
+                entity: ['$stateParams', '<%= entityClass %>', function($stateParams, <%= entityClass %>) {
+                    return <%= entityClass %>.get({id : $stateParams.id});
+                }]
+            }
         })
         .state('<%= entityStateName %>.delete', {
             parent: '<%= entityStateName %>',

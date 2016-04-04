@@ -5,9 +5,9 @@
         .module('<%=angularAppName%>')
         .controller('<%= entityAngularJSName %>DialogController', <%= entityAngularJSName %>DialogController);
 
-    <%= entityAngularJSName %>DialogController.$inject = ['$scope', '$stateParams', '$uibModalInstance'<% if (fieldsContainOwnerOneToOne) { %>, '$q'<% } %><% if (fieldsContainBlob) { %>, 'DataUtils'<% } %>, 'entity', '<%= entityClass %>'<% for (idx in differentTypes) { if (differentTypes[idx] != entityClass) {%>, '<%= differentTypes[idx] %>'<% } } %>];
+    <%= entityAngularJSName %>DialogController.$inject = ['$state', '$scope', '$stateParams', <% if (fieldsContainOwnerOneToOne) { %>, '$q'<% } %><% if (fieldsContainBlob) { %>, 'DataUtils'<% } %> 'entity', '<%= entityClass %>'<% for (idx in differentTypes) { if (differentTypes[idx] != entityClass) {%>, '<%= differentTypes[idx] %>'<% } } %>];
 
-    function <%= entityAngularJSName %>DialogController ($scope, $stateParams, $uibModalInstance<% if (fieldsContainOwnerOneToOne) { %>, $q<% } %><% if (fieldsContainBlob) { %>, DataUtils<% } %>, entity, <%= entityClass %><% for (idx in differentTypes) { if (differentTypes[idx] != entityClass) {%>, <%= differentTypes[idx] %><% } } %>) {
+    function <%= entityAngularJSName %>DialogController ($state, $scope, $stateParams, <% if (fieldsContainOwnerOneToOne) { %>, $q<% } %><% if (fieldsContainBlob) { %>, DataUtils<% } %> entity, <%= entityClass %><% for (idx in differentTypes) { if (differentTypes[idx] != entityClass) {%>, <%= differentTypes[idx] %><% } } %>) {
         var vm = this;
         vm.<%= entityInstance %> = entity;<%
             var queries = [];
@@ -41,9 +41,13 @@
             });
         };
 
+        if($stateParams.id != undefined){
+            vm.load($stateParams.id);
+        }
+
         var onSaveSuccess = function (result) {
             $scope.$emit('<%=angularAppName%>:<%= entityInstance %>Update', result);
-            $uibModalInstance.close(result);
+            //$uibModalInstance.close(result);
             vm.isSaving = false;
         };
 
@@ -58,10 +62,11 @@
             } else {
                 <%= entityClass %>.save(vm.<%= entityInstance %>, onSaveSuccess, onSaveError);
             }
+            $state.go('<%= entityStateName %>', null, { reload: true });
         };
 
         vm.clear = function() {
-            $uibModalInstance.dismiss('cancel');
+            //$uibModalInstance.dismiss('cancel');
         };
         <%_ if (fieldsContainZonedDateTime || fieldsContainLocalDate || fieldsContainDate) { _%>
 
